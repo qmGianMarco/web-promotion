@@ -1,0 +1,20 @@
+<div *ngIf="settingReady" class="header">
+  <h4 class="text-heading">{{ document.heading }}</h4>
+
+  <div *ngFor="let subHeads of document.subheads">
+    <h5 class="text-primary">{{ subHeads.subhead }}</h5>
+    <div *ngFor="let headItem of subHeads.headItems">
+      <div *ngIf="headItem.display">
+        <h6 class="text-info">
+          {{ headItem.head_item }}
+        </h6>
+      </div>
+      <div *ngFor="let documentItem of headItem.documentItems">
+        <item
+          [body_item]="documentItem"
+          [teacherId]="teacherId"
+        ></item>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,161 @@
+<div class="row">
+  <div class="col-md-8" id="select-category">
+    <nb-card accent="primary">
+      <nb-card-header>
+        <nb-icon icon="person-add-outline"></nb-icon> Estado de Postulación -
+        {{ status }}
+      </nb-card-header>
+      <nb-card-body>
+        <div *ngIf="!hasCategory">
+          <nb-card status="warning">
+            <nb-card-header
+              ><nb-icon icon="alert-triangle-outline"></nb-icon
+              >Precaución</nb-card-header
+            >
+            <nb-card-body>
+              Debe tener presente que
+              <strong>solo se puede seleccionar una vez.</strong>.
+            </nb-card-body>
+          </nb-card>
+
+          <form
+            id="form-select-category"
+            [formGroup]="fg"
+            (ngSubmit)="onSubmit()"
+          >
+            <div class="form-group row">
+              <label class="label col-sm-3 col-form-label">Categoria</label>
+              <div class="col-sm-9">
+                <nb-select
+                  placeholder="Seleccionar Tipo de Profesor"
+                  filled
+                  fullWidth
+                  formControlName="typeCandidateId"
+                >
+                  <nb-option
+                    *ngFor="let typeTeacher of typeTeachers"
+                    [value]="typeTeacher.id"
+                  >
+                    {{ typeTeacher?.name }}</nb-option
+                  >
+                </nb-select>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label class="label col-sm-3 col-form-label">Departamento</label>
+              <div class="col-sm-9">
+                <nb-select
+                  placeholder="Seleccionar Departamento"
+                  filled
+                  fullWidth
+                  formControlName="departamentId"
+                >
+                  <nb-option
+                    *ngFor="let departament of departaments"
+                    [value]="departament.id"
+                  >
+                    {{ departament?.name }}</nb-option
+                  >
+                </nb-select>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label class="label col-sm-3 col-form-label"
+                >Codigo de Plaza</label
+              >
+              <div class="col-sm-9">
+                <nb-select
+                  placeholder="Seleccionar Asignatura"
+                  filled
+                  fullWidth
+                  formControlName="subjectId"
+                >
+                  <nb-option
+                    *ngFor="let subject of subjects"
+                    [value]="subject.id"
+                    >{{ subject?.plazaCode }}</nb-option
+                  >
+                </nb-select>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <div class="offset-sm-3 col-sm-9">
+                <button
+                  type="submit"
+                  nbButton
+                  status="primary"
+                  [disabled]="submitted || this.fg.invalid"
+                >
+                  Enviar
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="col-md-12 col-xxxl-12">
+          <nb-card>
+            <nb-card-header>
+              <strong>Plaza Seleccionada</strong>
+            </nb-card-header>
+            <nb-card-body>
+              <p>
+                <label><strong>Facultad: </strong></label>
+                <label class="col-sm-9">{{
+                  faculty.name + " - " + faculty.code || "----"
+                }}</label>
+              </p>
+              <p>
+                <label><strong>Categoria: </strong></label>
+                <label class="col-sm-9">{{
+                  subjectSelected?.typeTeacher || "----"
+                }}</label>
+              </p>
+              <p>
+                <label><strong>Departamento: </strong></label>
+                <label class="col-sm-9">{{
+                  subjectSelected?.departament || "----"
+                }}</label>
+              </p>
+              <p>
+                <label><strong>Codigo de Plaza: </strong></label>
+                <label class="col-sm-9">{{
+                  subjectSelected?.plazaCode || "----"
+                }}</label>
+              </p>
+              <p>
+                <label><strong>Dedicación Horaria: </strong></label>
+                <label class="col-sm-9">{{
+                  subjectSelected?.scheduleDedication || "----"
+                }}</label>
+              </p>
+              <p>
+                <label><strong>Asignaturas: </strong></label> <br />
+              </p>
+              <ul class="mb-1" *ngFor="let name of subjectSelected?.names">
+                <li>{{ name }}</li>
+              </ul>
+              <label class="mt-2"
+                ><strong>Requisitos Específicos: </strong></label
+              >
+              <p id="requirements">
+                {{ subjectSelected?.requirements || "----" }}
+              </p>
+            </nb-card-body>
+          </nb-card>
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </div>
+
+  <div class="col-md-4" *ngIf="hasCategory">
+    <statements></statements>
+    <ngx-document-evaluate *ngIf="candidate.hasDocumentEvaluate"></ngx-document-evaluate>
+    <ngx-request-claim
+      [teacherId]="teacherId"
+      *ngIf="canDisplayClaim"
+    ></ngx-request-claim>
+  </div>
+</div>

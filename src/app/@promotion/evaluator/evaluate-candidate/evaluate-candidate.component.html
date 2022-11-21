@@ -1,0 +1,54 @@
+<div>
+  <h4 class="text-primary">
+    <nb-icon icon="file-text-outline"></nb-icon> Postulante Seleccionado
+  </h4>
+</div>
+<br />
+<div
+  class="buttons-row"
+  id="buttons-to-evaluate"
+  style="text-align: center; margin-bottom: 2rem"
+  *ngIf="canEvaluate"
+>
+  <ngx-button-dialog [setting]="settingButtonDialog"></ngx-button-dialog>
+  <button outline status="success" nbButton (click)="finishEvaluation()">
+    Finalizar Evaluación
+  </button>
+</div>
+
+<div
+  class="buttons-row"
+  id="buttons-to-response-claim"
+  style="text-align: center; margin-bottom: 2rem"
+  *ngIf="canReponseClaim"
+>
+  <ngx-button-dialog [setting]="buttonRejectClaim"></ngx-button-dialog>
+  <ngx-button-dialog
+    [setting]="buttonAcceptClaim"
+    style="margin-left: 2rem"
+  ></ngx-button-dialog>
+</div>
+
+<nb-accordion>
+  <nb-accordion-item #generalInfo expanded="true">
+    <nb-accordion-item-header> Datos Generales </nb-accordion-item-header>
+    <nb-accordion-item-body>
+      <div class="row">
+        <div class="col-md-12">
+          <selected-candidate [teacher]="teacher"> </selected-candidate>
+        </div>
+      </div>
+    </nb-accordion-item-body>
+  </nb-accordion-item>
+
+  <nb-accordion-item #formTeacher>
+    <nb-accordion-item-header> Ficha del Postulante </nb-accordion-item-header>
+    <nb-accordion-item-body>
+      <div *ngIf="teacher?.id">
+        <div>
+          <forms [teacherId]="teacher.id"></forms>
+        </div>
+      </div>
+    </nb-accordion-item-body>
+  </nb-accordion-item>
+</nb-accordion>

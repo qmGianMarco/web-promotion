@@ -1,0 +1,83 @@
+<div>
+  <h4 class="text-primary">
+    <nb-icon icon="person-outline"></nb-icon> Autorizar Evaluación
+  </h4>
+</div>
+<br />
+
+<nb-card [accent]="setting.title.color">
+  <nb-card-header>
+    <div>
+      <nb-icon [icon]="setting.title.icon"></nb-icon>
+      <strong> {{ setting.title.label }} </strong>
+    </div>
+  </nb-card-header>
+
+  <nb-card-body>
+    <div class="buttons-row" style="text-align: center; margin-bottom: 10px;">
+      <button
+        *ngIf="setting.type === 'authorize'"
+        outline
+        status="success"
+        nbButton
+        (click)="onAuthorizeActa()"
+      >
+        Autorizar
+        <nb-icon icon="checkmark-circle-outline"></nb-icon>
+      </button>
+      <button
+        *ngIf="setting.type === 'expect' || setting.type === 'generate'"
+        outline
+        status="primary"
+        nbButton
+        (click)="onReloadAuth()"
+      >
+        Recargar
+        <nb-icon icon="flip-2-outline"></nb-icon>
+      </button>
+      <button
+        *ngIf="setting.type === 'generate' && canCreateActa"
+        outline
+        nbButton
+        [hidden]="!canCreateActa"
+        status="primary"
+        (click)="onCreateActa()"
+      >
+        <nb-icon icon="plus-square-outline"></nb-icon>
+        Generar Acta
+      </button>
+    </div>
+
+    <div class="row">
+      <p>
+        {{ setting.body.paragraph }}
+      </p>
+    </div>
+    <div class="row" *ngIf="setting.type === 'to_select'">
+      <label class="label col-sm-3 col-form-label"> Ver Acta </label>
+      <div class="col-sm-9">
+        <button-document
+          [rowData]="fileActa"
+          [value]="fileActa.isUploaded"
+        ></button-document>
+      </div>
+    </div>
+    <div class="row">
+      <p class="text-primary"><b>AUTORIZACIÓN DE LA COMISIÓN</b></p>
+    </div>
+
+    <nb-card>
+      <nb-list>
+        <nb-list-item *ngFor="let evaluator of evaluators">
+          <div *ngIf="evaluator.hasAuthorizedEvaluate">
+            <nb-icon class="text-success" icon="checkmark-outline"></nb-icon>
+          </div>
+          <div *ngIf="!evaluator.hasAuthorizedEvaluate">
+            <nb-icon icon="close-outline" class="text-danger"></nb-icon>
+          </div>
+          {{ evaluator.role?.toUpperCase() }}: {{ evaluator?.completeName }}
+        </nb-list-item>
+      </nb-list>
+    </nb-card>
+  </nb-card-body>
+</nb-card>

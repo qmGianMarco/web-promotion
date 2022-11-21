@@ -1,0 +1,7 @@
+export enum E_STAGES {
+  PRE_INSCRIPTION = 1,
+  INSCRIPTION = 2,
+  FILL_DATA = 3,
+  EVALUATE_DATA = 4,
+  MASTER_CLASS = 5,
+}

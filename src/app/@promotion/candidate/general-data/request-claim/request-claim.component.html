@@ -1,0 +1,23 @@
+<nb-card accent="primary">
+  <nb-card-header>
+    <nb-icon icon="book-open-outline"></nb-icon>
+    FASE 01: EVALUACIÓN DE MERITOS | RECLAMOS</nb-card-header
+  >
+  <nb-card-body>
+    <label><b>Mensaje No Apto: </b></label>
+    <p class="col-sm-9">{{
+      dialogClaim?.unfit || "Ninguno"
+    }}</p>
+    <label><b>Postulante: </b></label>
+    <p class="col-sm-9">{{
+      dialogClaim?.request || "Solicitud Pendiente"
+    }}</p>
+    <label><b>Presidente: </b></label>
+    <p class="col-sm-9">{{
+      dialogClaim?.response || "Respuesta Pendiente"
+    }}</p>
+    <div class="buttons-row" style="text-align: center">
+      <ngx-button-dialog [setting]="settingButtonDialog" [hidden]="!canRequestClaim"></ngx-button-dialog>
+    </div>
+  </nb-card-body>
+</nb-card>
