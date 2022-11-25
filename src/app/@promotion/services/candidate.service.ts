@@ -1,8 +1,9 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { PromotionService } from "../../promotion.service";
-import { TokenService } from "../../../token.service";
+import { PromotionService } from "../promotion.service";
+import { TokenService } from "../../token.service";
 import { NbToastrService } from "@nebular/theme";
+import { LoadingService } from '../../interceptors/loading/loading.service';
 
 @Injectable({
   providedIn: "root",
@@ -14,7 +15,8 @@ export class CandidateService extends PromotionService {
   constructor(
     http: HttpClient,
     tokenService: TokenService,
-    toastService: NbToastrService
+    toastService: NbToastrService,
+    private loadingService: LoadingService
   ) {
     super(http, tokenService, toastService);
   }
@@ -41,9 +43,10 @@ export class CandidateService extends PromotionService {
   }
 
   async findAndSelect(authId: string) {
+    this.loadingService.show();
     const candidate = await this.get("/candidates/" + authId);
     this.candidateSelected = candidate.data;
-    console.log(this.candidateSelected);
+    this.loadingService.hide();
   }
 
   register(candidateId: string) {

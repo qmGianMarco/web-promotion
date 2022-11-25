@@ -1,4 +1,4 @@
-import { ButtonFileComponent } from './button-file/button-file';
+import { ButtonFileComponent } from '../../../../file/button-file.component';
 import { ButtonScoreComponents } from './button-score';
 import { ItemComponent } from './item.component';
 import { SmartTableDataDatepickerComponent } from './smart-table-datepicker/smart-table-datepicker.component';

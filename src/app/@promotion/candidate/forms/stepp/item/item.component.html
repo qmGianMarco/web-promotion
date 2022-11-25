@@ -1,25 +1,20 @@
 <nb-card *ngIf="readyConfigurations">
   <nb-card-header>
     <div>
-      <strong>
-        {{ body_item.title_item }}
-      </strong>
-      <br>
+      <strong>{{ body_item.title_item }} </strong>
+      <br />
       {{ body_item?.info }}
     </div>
   </nb-card-header>
 
   <nb-card-body>
-    <ngx-alert-prom [settings]="loadingAlert"></ngx-alert-prom>
-    <div>
-      <ng2-smart-table
-        [settings]="settings"
-        [source]="source"
-        (createConfirm)="onCreateConfirm($event)"
-        (editConfirm)="onEditConfirm($event)"
-        (deleteConfirm)="onDeleteConfirm($event)"
-      >
-      </ng2-smart-table>
-    </div>
+    <ng2-smart-table
+      [settings]="settings"
+      [source]="data"
+      (createConfirm)="onCreateConfirm($event)"
+      (editConfirm)="onEditConfirm($event)"
+      (deleteConfirm)="onDeleteConfirm($event)"
+    >
+    </ng2-smart-table>
   </nb-card-body>
 </nb-card>

@@ -1,27 +1,29 @@
-<nb-card status="warning" *ngIf="canDisplayAlert">
+<nb-card status="warning" *ngIf="!canDisplayForms">
   <nb-card-header
     ><nb-icon icon="alert-triangle-outline"></nb-icon> Ficha no
     autorizada</nb-card-header
   >
   <nb-card-body>
-    El postulante no ha completado la <b>FICHA DE USUARIO</b>.
+    El postulante no ha completado la <strog>FICHA DE USUARIO</strog>.
   </nb-card-body>
 </nb-card>
 
-<nb-card
-  [nbSpinner]="loadingForms"
-  nbSpinnerStatus="warning"
-  nbSpinnerSize="giant"
-  *ngIf="loadingForms"
->
-  <nb-card-body> Cargando <b>FICHA DE INSCRIPCIÓN</b>.... </nb-card-body>
-</nb-card>
-
 <nb-card class="col-md-12 col-lg-12 col-xxxl-12" *ngIf="canDisplayForms">
-  <nb-card-body>
+  <nb-card
+    [nbSpinner]="loadingForms"
+    nbSpinnerStatus="warning"
+    nbSpinnerSize="giant"
+    *ngIf="loadingForms"
+  >
+    <nb-card-body>
+      Cargando <strong>FICHA DE INSCRIPCIÓN</strong>....
+    </nb-card-body>
+  </nb-card>
+
+  <nb-card-body *ngIf="!loadingForms">
     <nb-stepper orientation="horizontal">
       <nb-step label="Sección I">
-        <stepp [document]="data[0]" [teacherId]="teacherId"> </stepp>
+        <stepp [document]="forms[0]"> </stepp>
         <div class="buttons-row" style="text-align: center">
           <button outline status="primary" nbButton nbStepperNext>
             Siguiente
@@ -30,10 +32,16 @@
         </div>
       </nb-step>
       <nb-step label="Sección II">
-        <stepp [document]="data[1]" [teacherId]="teacherId"> </stepp>
+        <stepp [document]="forms[1]"> </stepp>
 
         <div class="buttons-row" style="text-align: center">
-          <button outline status="primary" nbButton nbStepperPrevious>
+          <button
+            outline
+            status="primary"
+            nbButton
+            nbStepperPrevious
+            style="margin-right: 10px"
+          >
             <nb-icon icon="arrow-ios-back-outline"></nb-icon>
             Atras
           </button>
@@ -44,7 +52,7 @@
         </div>
       </nb-step>
       <nb-step label="Sección III">
-        <stepp [document]="data[2]" [teacherId]="teacherId"> </stepp>
+        <stepp [document]="forms[2]"> </stepp>
         <div class="buttons-row" style="text-align: center">
           <button outline status="primary" nbButton nbStepperPrevious>
             <nb-icon icon="arrow-ios-back-outline"></nb-icon>

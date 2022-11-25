@@ -6,7 +6,17 @@ import { ViewScoreComponent } from "./view-score/view-score.component";
 
 @Component({
   selector: "ngx-button-score",
-  templateUrl: "./button-score.html",
+  template: `
+    <button
+      nbButton
+      outline
+      [status]="status"
+      (click)="onClick()"
+      [disabled]="!canSetScore"
+    >
+      {{ value }}
+    </button>
+  `,
 })
 export class ButtonScoreComponent implements ViewCell, OnInit {
   status: string;

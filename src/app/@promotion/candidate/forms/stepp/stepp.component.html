@@ -1,6 +1,5 @@
-<div *ngIf="settingReady" class="header">
+<div *ngIf="hasValue" class="header">
   <h4 class="text-heading">{{ document.heading }}</h4>
-
   <div *ngFor="let subHeads of document.subheads">
     <h5 class="text-primary">{{ subHeads.subhead }}</h5>
     <div *ngFor="let headItem of subHeads.headItems">
@@ -10,10 +9,7 @@
         </h6>
       </div>
       <div *ngFor="let documentItem of headItem.documentItems">
-        <item
-          [body_item]="documentItem"
-          [teacherId]="teacherId"
-        ></item>
+        <item [body_item]="documentItem"></item>
       </div>
     </div>
   </div>

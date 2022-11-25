@@ -9,10 +9,10 @@ import {
 } from "@angular/core";
 import { NbWindowService, NbWindowRef } from "@nebular/theme";
 import { ViewCell } from "ng2-smart-table";
-import { TokenService } from "../../../../../../token.service";
-import { FileComponent } from "../../../../../file/file.component";
-import { FileService } from "../../../../../file/file.service";
-import { FileMetaDataType } from "../../../../../file/file.type";
+import { TokenService } from "../../token.service";
+import { FileComponent } from "./file.component";
+import { FileService } from "./file.service";
+import { FileMetaDataType } from "./file.type";
 
 @Component({
   selector: "button-file",

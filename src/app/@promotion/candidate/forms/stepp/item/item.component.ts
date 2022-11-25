@@ -2,10 +2,9 @@ import {
   Component,
   Input,
   OnChanges,
-  OnInit,
   SimpleChanges,
 } from "@angular/core";
-import { ItemService } from "./item.service";
+import { ItemService } from "../../../../services/item.service";
 import { TokenPayload, TokenService } from "../../../../../token.service";
 import { IItemSetting } from "./item.interface";
 import { ButtonScoreComponent } from "./button-score/button-score";
@@ -13,24 +12,17 @@ import { SmartTableDataDatepickerComponent } from "./smart-table-datepicker/smar
 import { E_DOCUMENTS_GENERAL } from "../../../../../utils/documents_generals";
 import { StageService } from "../../../../services/stage.service";
 import { PermissionService } from "../../../../services/permission.service";
-import { ButtonFileComponent } from './button-file/button-file';
+import { ButtonFileComponent } from "../../../../file/button-file.component";
 @Component({
   selector: "item",
   templateUrl: "./item.component.html",
   styleUrls: ["./item.component.scss"],
 })
-export class ItemComponent implements OnInit, OnChanges {
+export class ItemComponent implements OnChanges {
   @Input() body_item: IItemSetting;
-  @Input() teacherId: string;
-  srcImageDisplay: string;
   readyConfigurations = false;
-  loadingAlert = {};
-  user: any;
-
-  source = [];
-  sourceAux = [];
+  data = [];
   settings: any;
-  settingRol = {};
   payloadToken: TokenPayload;
   columns = {
     custom: {},
@@ -45,47 +37,31 @@ export class ItemComponent implements OnInit, OnChanges {
   ) {
     this.payloadToken = this.tokenService.getPayload();
   }
-  ngOnInit() {}
 
   async ngOnChanges(changes: SimpleChanges) {
     if (changes.body_item?.currentValue.columns) {
       await this.setColumns();
-      this.readyConfigurations = true;
-      this.settings = {
-        ...this.columns.actions,
-        noDataMessage: "Sin registros para mostrar",
-        columns: {
-          ...this.columns.default,
-          ...this.columns.custom,
-        },
-      };
       this.setDataTable(changes.body_item.currentValue.values);
     }
   }
 
   async setColumns() {
-    const SCORE = {
-      score: {
-        title: "Puntos",
-        type: "custom",
-        width: "8%",
-        editable: false,
-        addable: false,
-        filter: false,
-        editor: {
-          config: false,
-        },
-        renderComponent: ButtonScoreComponent,
-        onComponentInitFunction: (instance) => {
-          instance.save.subscribe((row) => {
-            if (row === "CLOSED") {
-              this.refresh();
-            }
-          });
-        },
+    this.setActionsColumns();
+    this.setDocumentColumns();
+    this.setScoreColumns();
+    this.setDataPickerColumns();
+    this.settings = {
+      ...this.columns.actions,
+      noDataMessage: "Sin registros para mostrar",
+      columns: {
+        ...this.columns.default,
+        ...this.columns.custom,
       },
     };
+    this.readyConfigurations = true;
+  }
 
+  setDocumentColumns() {
     const DOCUMENT = {
       button: {
         title: "Documento",
@@ -107,6 +83,42 @@ export class ItemComponent implements OnInit, OnChanges {
         },
       },
     };
+    this.columns.custom = {
+      ...this.columns.custom,
+      ...DOCUMENT,
+    };
+  }
+
+  setScoreColumns() {
+    const SCORE = {
+      score: {
+        title: "Puntos",
+        type: "custom",
+        width: "8%",
+        editable: false,
+        addable: false,
+        filter: false,
+        editor: {
+          config: false,
+        },
+        renderComponent: ButtonScoreComponent,
+        onComponentInitFunction: (instance) => {
+          instance.save.subscribe((row) => {
+            if (row === "CLOSED") {
+              this.refresh();
+            }
+          });
+        },
+      },
+    };
+    // const canEvaluateData = this.stageService.canEvaluateData;
+    this.columns.custom = {
+      ...this.columns.custom,
+      ...SCORE,
+    };
+  }
+
+  setActionsColumns() {
     const WITH_ACTIONS = {
       actions: {
         columnTitle: "Acciones",
@@ -146,23 +158,12 @@ export class ItemComponent implements OnInit, OnChanges {
       },
     };
 
-    this.columns.custom = DOCUMENT;
-    const canEvaluateData = this.stageService.canEvaluateData;
-    if (canEvaluateData) {
-      this.columns.custom = {
-        ...this.columns.custom,
-        ...SCORE,
-      };
-    }
-    const canDisplayAction = this.permissionService.getCanFillData();
-    this.columns.actions = canDisplayAction
-      ? { ...WITH_ACTIONS }
-      : { ...WITHOUT_ACTIONS };
-
-    this.columns.default = this.insertDatePicker(this.body_item.columns);
+    // const canDisplayAction = this.permissionService.getCanFillData();
+    this.columns.actions = true ? { ...WITH_ACTIONS } : { ...WITHOUT_ACTIONS };
   }
 
-  insertDatePicker(columns: any) {
+  setDataPickerColumns() {
+    const columns = this.body_item.columns as any;
     const customDatePicker = {
       editor: {
         type: "custom",
@@ -187,19 +188,16 @@ export class ItemComponent implements OnInit, OnChanges {
         ...customDatePicker,
       };
     }
-    return columns;
+    this.columns.default = columns;
   }
 
   async refresh() {
-    const { data } = await this.itemService.listItemForm(
-      this.teacherId,
-      this.body_item.id
-    );
+    const { data } = await this.itemService.listItemForm(this.body_item.id);
     this.setDataTable(data);
   }
 
   setDataTable(data: any[]) {
-    this.source = data.map((item) => {
+    this.data = data.map((item) => {
       return {
         ...item.description,
         id: item.id,
@@ -216,7 +214,6 @@ export class ItemComponent implements OnInit, OnChanges {
     let description = event.newData;
     delete description.button;
     await this.itemService.insertItemForm(
-      this.teacherId,
       this.body_item.id,
       JSON.stringify(description)
     );

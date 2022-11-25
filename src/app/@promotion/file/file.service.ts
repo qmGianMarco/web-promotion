@@ -4,7 +4,7 @@ import { PromotionService } from "../promotion.service";
 import { TokenService } from "../../token.service";
 import { NbToastrService } from "@nebular/theme";
 import { FileMetaDataType } from "./file.type";
-import { FilesCandidate } from '../shared/list-candidates/candidate.service';
+import { FilesCandidate } from '../services/candidate.service';
 
 const FILE = "/files";
 

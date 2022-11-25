@@ -12,7 +12,7 @@ import { FileService } from "../../../file/file.service";
 import {
   Candidate,
   CandidateService,
-} from "../../../shared/list-candidates/candidate.service";
+} from "../../../services/candidate.service";
 import { fileMetadataDefault, FileMetaDataType } from "../../../file/file.type";
 
 @Component({

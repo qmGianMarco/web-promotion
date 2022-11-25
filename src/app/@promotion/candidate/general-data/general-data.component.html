@@ -152,7 +152,9 @@
 
   <div class="col-md-4" *ngIf="hasCategory">
     <statements></statements>
-    <ngx-document-evaluate *ngIf="candidate.hasDocumentEvaluate"></ngx-document-evaluate>
+    <ngx-document-evaluate
+      *ngIf="candidate.hasDocumentEvaluate"
+    ></ngx-document-evaluate>
     <ngx-request-claim
       [teacherId]="teacherId"
       *ngIf="canDisplayClaim"

@@ -1,10 +1,7 @@
 import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
-import { FormsComponent } from '../../@promotion/candidate/forms/forms.component';
-import { GeneralDataComponent } from '../../@promotion/candidate/general-data/general-data.component';
-
-import { FichaComponent } from "./ficha/ficha.component";
-import { InscripcionComponent } from "./inscripcion/inscripcion.component";
+import { FormsComponent } from "../../@promotion/candidate/forms/forms.component";
+import { GeneralDataComponent } from "../../@promotion/candidate/general-data/general-data.component";
 
 const routes: Routes = [
   {
@@ -12,11 +9,11 @@ const routes: Routes = [
     children: [
       {
         path: "general-data",
-        component: InscripcionComponent,
+        component: GeneralDataComponent,
       },
       {
         path: "forms",
-        component: FichaComponent,
+        component: FormsComponent,
       },
     ],
   },
@@ -28,7 +25,4 @@ const routes: Routes = [
 })
 export class CandidateRoutingModule {}
 
-export const routedComponents = [
-  FichaComponent,
-  InscripcionComponent,
-];
+export const routedComponents = [];

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from "@angular/core";
-import { CandidateService } from "./candidate.service";
+import { CandidateService } from "../../services/candidate.service";
 import { TokenService } from "../../../token.service";
 @Component({
   selector: "list-candidates",

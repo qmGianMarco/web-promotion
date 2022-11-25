@@ -1,8 +1,12 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { PromotionService } from "../../../../promotion.service";
-import { TokenService } from "../../../../../token.service";
+import { PromotionService } from "../promotion.service";
+import { TokenService } from "../../token.service";
 import { NbToastrService } from "@nebular/theme";
+import {
+  Candidate,
+  CandidateService,
+} from "./candidate.service";
 
 const ROUTES = {
   FORM: "/forms",
@@ -11,26 +15,30 @@ const ROUTES = {
   providedIn: "root",
 })
 export class ItemService extends PromotionService {
+  candidate: Candidate;
+
   constructor(
     http: HttpClient,
     tokenService: TokenService,
-    toastrService: NbToastrService
+    toastrService: NbToastrService,
+    private candidateService: CandidateService
   ) {
     super(http, tokenService, toastrService);
+    this.candidate = this.candidateService.getSelected();
   }
 
   getRoute(teacherId: string, formId: number) {
     return `${ROUTES.FORM}/${teacherId}/${formId}`;
   }
 
-  listItemForm(teacherId: string, formId: number) {
-    return this.get(this.getRoute(teacherId, formId));
+  listItemForm(formId: number) {
+    return this.get(this.getRoute(this.candidate.id, formId));
   }
 
-  insertItemForm(teacherId: string, formId: number, description: string) {
+  insertItemForm(formId: number, description: string) {
     return this.create(
       {
-        path: this.getRoute(teacherId, formId),
+        path: this.getRoute(this.candidate.id, formId),
         titleToast: "Insertar Registro",
       },
       { description }
@@ -50,8 +58,8 @@ export class ItemService extends PromotionService {
       titleToast: "Eliminar Registro",
     });
   }
-  
-  getAllFormComplete = (teacherId: string) => {
-    return this.get(`${ROUTES.FORM}/${teacherId}`);
-  }
+
+  getAllFormComplete = () => {
+    return this.get(`${ROUTES.FORM}/${this.candidate.id}`);
+  };
 }

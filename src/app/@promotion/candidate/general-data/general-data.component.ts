@@ -4,7 +4,7 @@ import { Faculty } from "../../../../assets/data/faculties";
 import {
   Candidate,
   CandidateService,
-} from "../../shared/list-candidates/candidate.service";
+} from "../../services/candidate.service";
 
 @Component({
   selector: "general-data",

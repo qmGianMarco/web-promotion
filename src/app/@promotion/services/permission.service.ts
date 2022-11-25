@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { RoleService, TokenService } from "../../token.service";
 import { E_STATUS } from "../../utils/status";
 import { AuthEvaluateService } from '../evaluator/opening-act/opening-act.service';
-import { CandidateService } from '../shared/list-candidates/candidate.service';
+import { CandidateService } from './candidate.service';
 import { StageService } from "./stage.service";
 import { StatusService } from "./state.service";
 
