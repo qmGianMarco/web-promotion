@@ -64,6 +64,7 @@ export class OpeningActComponent implements OnInit {
     const resultFile = await this.fileService.getMetadata({
       entityId: facultyId,
       typeId: E_DOCUMENTS_GENERAL.OPENING_ACT,
+      url: null,
     });
     this.fileActa.fileId = resultFile.data.id;
     this.fileActa.isUploaded = resultFile.data.isUploaded;

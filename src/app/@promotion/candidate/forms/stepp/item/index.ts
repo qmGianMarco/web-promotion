@@ -1,11 +1,11 @@
-import { ButtonDocumentComponent } from './button-document/button-document';
+import { ButtonFileComponent } from './button-file/button-file';
 import { ButtonScoreComponents } from './button-score';
 import { ItemComponent } from './item.component';
 import { SmartTableDataDatepickerComponent } from './smart-table-datepicker/smart-table-datepicker.component';
 
 export const ItemComponents = [
   ItemComponent,
-  ButtonDocumentComponent,
+  ButtonFileComponent,
   ...ButtonScoreComponents,
   SmartTableDataDatepickerComponent
 ]

@@ -9,11 +9,11 @@ import { ItemService } from "./item.service";
 import { TokenPayload, TokenService } from "../../../../../token.service";
 import { IItemSetting } from "./item.interface";
 import { ButtonScoreComponent } from "./button-score/button-score";
-import { ButtonDocumentComponent } from "./button-document/button-document";
 import { SmartTableDataDatepickerComponent } from "./smart-table-datepicker/smart-table-datepicker.component";
 import { E_DOCUMENTS_GENERAL } from "../../../../../utils/documents_generals";
 import { StageService } from "../../../../services/stage.service";
 import { PermissionService } from "../../../../services/permission.service";
+import { ButtonFileComponent } from './button-file/button-file';
 @Component({
   selector: "item",
   templateUrl: "./item.component.html",
@@ -97,7 +97,7 @@ export class ItemComponent implements OnInit, OnChanges {
         editor: {
           config: false,
         },
-        renderComponent: ButtonDocumentComponent,
+        renderComponent: ButtonFileComponent,
         onComponentInitFunction: (instance) => {
           instance.closeView.subscribe((row) => {
             if (row === "CLOSED") {

@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { NbWindowRef } from "@nebular/theme";
 import { PermissionService } from "../services/permission.service";
 import { FileService } from "./file.service";
-import { FileType } from "./file.type";
+import { FileMetaDataType } from "./file.type";
 
 @Component({
   selector: "ngx-file",
@@ -18,7 +18,7 @@ export class FileComponent implements OnInit {
   canDisplayUpload = false;
   canDisplayComponents = false;
   canViewComponents: boolean = false;
-  fileMetadata: FileType;
+  fileMetadata: FileMetaDataType;
 
   constructor(
     public windowRef: NbWindowRef,
@@ -64,19 +64,15 @@ export class FileComponent implements OnInit {
   };
 
   async onUpload() {
-    const { isUploaded } = this.context;
-    if (!isUploaded) {
-      await this.fileService.uploadNewFile(this.context, this.file);
-    } else {
-      await this.fileService.uploadFile(this.context, this.file);
-    }
+    this.canUpload = false;
+    await this.fileService.upload(this.file);
     this.close();
     this.canUpload = false;
     this.canDownload = true;
   }
 
   async onDownload() {
-    const file = await this.fileService.downloadFile(this.fileMetadata.fileId);
+    const file = await this.fileService.download();
     let a = document.createElement("a");
     a.href = "data:application/pdf;base64," + file.data;
     a.target = "_blank";
@@ -85,7 +81,7 @@ export class FileComponent implements OnInit {
   }
 
   async onView() {
-    const file = await this.fileService.downloadFile(this.fileMetadata.fileId);
+    const file = await this.fileService.download();
     let pdfWindow = window.open("");
     pdfWindow.document.write(
       "<iframe width='100%' height='100%' src='data:application/pdf;base64, " +

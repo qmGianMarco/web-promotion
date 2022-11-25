@@ -19,11 +19,11 @@
           statement?.name
         }}</label>
         <div class="col-sm-9" >
-          <button-document
+          <button-file
             [rowData]="statement"
             [value]="statement.fileId !== null"
             (closeView)="closeView()"
-          ></button-document>
+          ></button-file>
         </div>
       </div>
     </form>

@@ -9,21 +9,23 @@ import {
 } from "@angular/core";
 import { NbWindowService, NbWindowRef } from "@nebular/theme";
 import { ViewCell } from "ng2-smart-table";
-import { TokenPayload, TokenService } from "../../../../../../token.service";
-import { E_ROLES } from "../../../../../../utils/roles";
+import { TokenService } from "../../../../../../token.service";
 import { FileComponent } from "../../../../../file/file.component";
 import { FileService } from "../../../../../file/file.service";
-import { FileType } from "../../../../../file/file.type";
+import { FileMetaDataType } from "../../../../../file/file.type";
 
 @Component({
-  selector: "button-document",
-  templateUrl: "./button-document.html",
+  selector: "button-file",
+  template: `
+    <button nbButton [status]="button.color" (click)="onClick()">
+      <nb-icon [icon]="button.icon"></nb-icon>
+    </button>
+  `,
 })
-export class ButtonDocumentComponent implements ViewCell, OnInit, OnChanges {
-  @Input() value;
+export class ButtonFileComponent implements ViewCell, OnInit, OnChanges {
+  @Input() value: boolean;
   @Input() rowData: any;
   @Output() closeView: EventEmitter<any> = new EventEmitter();
-  payloadToken: TokenPayload;
   button = {
     icon: "edit-outline",
     color: "warning",
@@ -34,9 +36,7 @@ export class ButtonDocumentComponent implements ViewCell, OnInit, OnChanges {
     private windowService: NbWindowService,
     private tokenService: TokenService,
     private fileService: FileService
-  ) {
-    this.payloadToken = this.tokenService.getPayload();
-  }
+  ) {}
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.value) {
@@ -57,7 +57,7 @@ export class ButtonDocumentComponent implements ViewCell, OnInit, OnChanges {
       };
       return;
     }
-    if (this.payloadToken.roleId !== E_ROLES.TEACHER) {
+    if (!this.tokenService.isCandidate()) {
       this.button = {
         icon: "close-outline",
         color: "danger",
@@ -66,26 +66,26 @@ export class ButtonDocumentComponent implements ViewCell, OnInit, OnChanges {
   }
 
   onClick() {
-    let file: FileType;
-    const isUploaded = this.rowData.fileId;
-    if (isUploaded !== undefined && this.rowData) {
-      file = {
+    let fileMetadata: FileMetaDataType;
+    const isUploaded = Boolean(this.rowData.fileId);
+    if (this.rowData) {
+      fileMetadata = {
         name: this.rowData.name,
         entityId: this.rowData.id || this.rowData.entityId,
         typeId: this.rowData.typeId,
         fileId: this.rowData.fileId,
+        url: this.rowData.url,
       };
     }
 
-    if (!isUploaded && this.payloadToken.roleId !== E_ROLES.TEACHER) {
+    if (!isUploaded && !this.tokenService.isCandidate()) {
       alert("No existe archivo en este registro");
       return;
     }
-
-    this.fileService.setMetadata(file);
+    this.fileService.setMetadata(fileMetadata);
     this.windowsRef = this.windowService.open(FileComponent, {
-      title: file.name,
-      context: file,
+      title: fileMetadata.name,
+      context: fileMetadata,
       closeOnEsc: true,
     });
 

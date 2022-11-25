@@ -3,24 +3,18 @@ import { HttpClient } from "@angular/common/http";
 import { PromotionService } from "../promotion.service";
 import { TokenService } from "../../token.service";
 import { NbToastrService } from "@nebular/theme";
-import { FileType } from "./file.type";
+import { FileMetaDataType } from "./file.type";
+import { FilesCandidate } from '../shared/list-candidates/candidate.service';
 
-export interface IContex {
-  name?: string;
-  fileId?: number;
-  entityId: number; // teacherId | facultyId
-  typeId: number;
-  evaluatorId?: number;
-}
+const FILE = "/files";
 
-const ROUTES = {
-  FILE: "/files",
-};
 @Injectable({
   providedIn: "root",
 })
 export class FileService extends PromotionService {
-  file: FileType;
+  private fileMetadata: FileMetaDataType;
+  private fileMetadataUploaded: FilesCandidate;
+
   constructor(
     http: HttpClient,
     tokenService: TokenService,
@@ -29,48 +23,42 @@ export class FileService extends PromotionService {
     super(http, tokenService, toastrService);
   }
 
-  setMetadata(file: FileType) {
-    this.file = file;
+  setMetadata(fileMetadata: FileMetaDataType) {
+    this.fileMetadata = fileMetadata;
   }
 
   _getMetadata() {
-    return this.file;
+    return this.fileMetadata;
   }
 
-  getMetadata(context: IContex) {
-    const { typeId, entityId, evaluatorId = null } = context;
-    const path = `${ROUTES.FILE}/${typeId}/${entityId}/${evaluatorId}`;
+  getMetadataUpdloaded() {
+    return this.fileMetadataUploaded;
+  }
+
+  // TODO: remove function deprecated
+  getMetadata(metadata: FileMetaDataType) {
+    const { typeId, entityId, evaluatorId = null } = metadata;
+    const path = `${FILE}/${typeId}/${entityId}/${evaluatorId}`;
     return this.get(path);
   }
 
-  uploadNewFile(context: IContex, file: File) {
+  async upload(file: File) {
     const formData = new FormData();
-    formData.append("documentPdf", file);
-    const { typeId, entityId } = context;
-    const path = `${ROUTES.FILE}/${typeId}/${entityId}`;
-    return this.create(
+    formData.append("filePdf", file);
+    const { typeId, entityId, url, fileId } = this.fileMetadata;
+    const path = `${FILE}/?typeId=${typeId}&entityId=${entityId}&url=${url}&id=${fileId}`;
+    const response = await this.create(
       {
         path,
         titleToast: "Subir Nuevo Archivo",
       },
       formData
     );
+    this.fileMetadataUploaded = response.data as FilesCandidate;
   }
 
-  uploadFile(context: IContex, file: File) {
-    const formData = new FormData();
-    formData.append("documentPdf", file);
-    return this.update(
-      {
-        path: ROUTES.FILE + "/" + context.fileId,
-        titleToast: "Actualizar Archivo",
-      },
-      formData
-    );
-  }
-
-  downloadFile(fileId: number) {
-    const path = ROUTES.FILE + "/" + fileId;
-    return this.get(path);
+  download() {
+    const { url } = this.fileMetadata;
+    return this.get(`${FILE}/?url=${url}`);
   }
 }

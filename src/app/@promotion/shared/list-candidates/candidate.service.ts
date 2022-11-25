@@ -19,14 +19,25 @@ export class CandidateService extends PromotionService {
     super(http, tokenService, toastService);
   }
 
+  getSelected() {
+    return this.candidateSelected;
+  }
+
+  getStatusIdTeacherSelected() {
+    return this.teacherSelected?.statusId;
+  }
+
+  updateFileMetadata(input: FilesCandidate) {
+    const files = this.candidateSelected.files.filter(
+      (file) => file.id !== input.id
+    );
+    this.candidateSelected.files = [...files, input];
+  }
+
   findAll() {
     if (this.tokenService.isAdmin()) {
       return this.get("/candidates?forAdmin=true");
     }
-  }
-
-  getSelected() {
-    return this.candidateSelected;
   }
 
   async findAndSelect(authId: string) {
@@ -46,13 +57,9 @@ export class CandidateService extends PromotionService {
     return this.create({ path, titleToast: "Seleccionar Plaza" }, rest);
   }
 
-  getStatusIdTeacherSelected() {
-    return this.teacherSelected?.statusId;
-  }
-
-  findDocuments() {
-    const candidateId = this.candidateSelected.id
-    return this.get(`/candidates/${candidateId}/documents`);
+  findFiles() {
+    const candidateId = this.candidateSelected.id;
+    return this.get(`/candidates/${candidateId}/files`);
   }
 }
 
@@ -81,4 +88,11 @@ export type Candidate = {
   facultyId: number;
   hasAllStatements: boolean;
   hasDocumentEvaluate: boolean;
-}
+  files: FilesCandidate[];
+};
+
+export type FilesCandidate = {
+  id: number;
+  typeFileId: number;
+  url: string;
+};

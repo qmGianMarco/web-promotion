@@ -13,7 +13,7 @@ import {
   Candidate,
   CandidateService,
 } from "../../../shared/list-candidates/candidate.service";
-import { FileType } from "../../../file/file.type";
+import { fileMetadataDefault, FileMetaDataType } from "../../../file/file.type";
 
 @Component({
   selector: "statements",
@@ -24,17 +24,15 @@ export class StatementsComponent implements OnInit {
   @Input() teacherId: string;
   candidate: Candidate;
   hasUploadedStatements = false;
-  statements: FileType[] = [
+  statements: FileMetaDataType[] = [
     {
+      ...fileMetadataDefault,
       name: "ANEXO 1",
-      fileId: null,
-      entityId: null,
       typeId: E_DOCUMENTS_GENERAL.ANEXO_1,
     },
     {
+      ...fileMetadataDefault,
       name: "ANEXO 2",
-      fileId: null,
-      entityId: null,
       typeId: E_DOCUMENTS_GENERAL.ANEXO_2,
     },
   ];
@@ -54,9 +52,19 @@ export class StatementsComponent implements OnInit {
     this.hasUploadedStatements = this.candidate.hasAllStatements;
     this.statements = this.statements.map((stm) => {
       stm.entityId = this.candidate.id;
+      const file = this.candidate.files.find(
+        (doc) => doc.typeFileId === stm.typeId
+      );
+      stm.fileId = file?.id;
+      stm.url = file?.url;
       return stm;
     });
   }
 
-  async closeView() {}
+  async closeView() {
+    const metadataUploaded = this.fileService.getMetadataUpdloaded();
+    if (!metadataUploaded) return;
+    this.candidateService.updateFileMetadata(metadataUploaded);
+    this.setAttributes();
+  }
 }
