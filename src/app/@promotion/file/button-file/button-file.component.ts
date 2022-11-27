@@ -9,10 +9,11 @@ import {
 } from "@angular/core";
 import { NbWindowService, NbWindowRef } from "@nebular/theme";
 import { ViewCell } from "ng2-smart-table";
-import { TokenService } from "../../token.service";
-import { FileComponent } from "./file.component";
-import { FileService } from "./file.service";
-import { FileMetaDataType } from "./file.type";
+import { TokenService } from "../../../token.service";
+import { FileComponent } from "../file.component";
+import { FileService } from "../file.service";
+import { FileMetaDataType } from "../file.type";
+import { buttons } from './button-file.type';
 
 @Component({
   selector: "button-file",
@@ -24,12 +25,9 @@ import { FileMetaDataType } from "./file.type";
 })
 export class ButtonFileComponent implements ViewCell, OnInit, OnChanges {
   @Input() value: boolean;
-  @Input() rowData: any;
+  @Input() rowData: FileMetaDataType;
   @Output() closeView: EventEmitter<any> = new EventEmitter();
-  button = {
-    icon: "edit-outline",
-    color: "warning",
-  };
+  button = buttons["can-upload"];
   windowsRef: NbWindowRef = null;
 
   constructor(
@@ -49,46 +47,32 @@ export class ButtonFileComponent implements ViewCell, OnInit, OnChanges {
   }
 
   setButton() {
-    const isUploaded = this.rowData.fileId;
+    const isUploaded = this.rowData.url;
     if (isUploaded) {
-      this.button = {
-        icon: "done-all-outline",
-        color: "success",
-      };
+      this.button = buttons["uploaded"];
       return;
     }
     if (!this.tokenService.isCandidate()) {
-      this.button = {
-        icon: "close-outline",
-        color: "danger",
-      };
+      this.button = buttons["can-not-upload"];
     }
   }
 
   onClick() {
-    let fileMetadata: FileMetaDataType;
-    const isUploaded = Boolean(this.rowData.fileId);
-    if (this.rowData) {
-      fileMetadata = {
-        name: this.rowData.name,
-        entityId: this.rowData.id || this.rowData.entityId,
-        typeId: this.rowData.typeId,
-        fileId: this.rowData.fileId,
-        url: this.rowData.url,
-      };
-    }
-
+    const isUploaded = Boolean(this.rowData.url);
     if (!isUploaded && !this.tokenService.isCandidate()) {
       alert("No existe archivo en este registro");
       return;
     }
-    this.fileService.setMetadata(fileMetadata);
+    this.fileService.setMetadata(this.rowData);
     this.windowsRef = this.windowService.open(FileComponent, {
-      title: fileMetadata.name,
-      context: fileMetadata,
+      title: this.rowData.name,
       closeOnEsc: true,
+      buttons: {
+        minimize: false,
+        maximize: false,
+        fullScreen: false,
+      },
     });
-
     this.windowsRef.onClose.subscribe(() => {
       this.closeView.emit("CLOSED");
     });

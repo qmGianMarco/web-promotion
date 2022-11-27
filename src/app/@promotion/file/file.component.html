@@ -1,5 +1,6 @@
-<nb-card accent="info" *ngIf="canDisplayComponents">
+<nb-card accent="info">
   <nb-card-body>
+    <span class="text-success"> Archivo Guardado: <strong>{{ fileName }}</strong></span>
     <div id="input-upload" class="row" *ngIf="canDisplayUpload">
       <div class="col-sm-12">
         <ngx-alert-prom [settings]="showAlert"></ngx-alert-prom>
@@ -29,18 +30,6 @@
       >
         <nb-icon icon="cloud-upload-outline"></nb-icon>
         Guardar
-      </button>
-
-      <button
-        outline
-        nbButton
-        [disabled]="!canDownload"
-        status="warning"
-        (click)="onView()"
-        hidden="true"
-      >
-        <nb-icon icon="eye-outline"></nb-icon>
-        Ver
       </button>
 
       <button

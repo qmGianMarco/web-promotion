@@ -1,9 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { Faculty } from "../../../../assets/data/faculties";
+import { Position } from "../../class/position";
 import {
-  Candidate,
   CandidateService,
+  SelectPositionInput,
 } from "../../services/candidate.service";
 
 @Component({
@@ -12,106 +12,75 @@ import {
   templateUrl: "./general-data.component.html",
 })
 export class GeneralDataComponent implements OnInit {
-  hasCategory = false;
-  typeTeachers: any;
-  departaments: any;
-  subjects: any;
-  subjectSelected: any;
-  submitted = false;
-  canDisplayClaim = false;
-  faculty;
-  status: string;
-  candidate: Candidate;
+  options: {
+    typeCandidates: any;
+    departaments: any;
+    subjects: any;
+  };
+  flag = {
+    hasDocumentEvaluate: false,
+    canDisplayClaim: false,
+    submitted: false,
+    hasPosition: false,
+  }
+  position: Position;
   fg: FormGroup;
+  statusName: string;
+  _positionDisplay: any;
 
   constructor(
     private candidateService: CandidateService,
     private fb: FormBuilder
   ) {
-    this.candidate = this.candidateService.getSelected();
-    this.faculty = Faculty.findOneById(this.candidate.facultyId);
-    this.typeTeachers = this.faculty.typeTeachers;
-    this.hasCategory = this.candidate?.subjectId > 0;
-    if (this.hasCategory) {
-      this.getInfoSubjectSelected();
-      return;
-    }
+    const candidate = this.candidateService.getSelected();
+    this.statusName = candidate.getStatusName();
+    this.position = candidate.getPosition();
+    this.flag.hasDocumentEvaluate = candidate.info.hasDocumentEvaluate;
+    this._positionDisplay = this.position.getInfoToDisplay();
+  }
+
+  ngOnInit() {
+    this.flag.hasPosition = this.position.hasPosition();
+    if (this.flag.hasPosition) return;
+
     this.fg = this.fb.group({
       typeCandidateId: [0, [Validators.required, Validators.min(1)]],
       departamentId: [0, [Validators.required, Validators.min(1)]],
       subjectId: [0, [Validators.required, Validators.min(1)]],
     });
-  }
 
-  ngOnInit() {
-    if (this.hasCategory) return;
+    this.options.typeCandidates = this.position.getTypesCandidate();
 
     this.fg.get("typeCandidateId").valueChanges.subscribe((id) => {
       this.fg.get("departamentId").setValue(0);
       this.fg.get("subjectId").setValue(0);
-      const typeTeacher = Faculty.getAttributes(this.typeTeachers, id);
-      this.departaments = typeTeacher?.departaments;
-      this.subjectSelected = {
-        ...this.subjectSelected,
-        typeTeacher: typeTeacher?.name || "",
-      };
+      this.position.setTypeCandidate(id);
+      this.options.departaments = this.position.getDepartaments();
+      this._positionDisplay = this.position.getInfoToDisplay();
     });
 
     this.fg.get("departamentId").valueChanges.subscribe((id) => {
       this.fg.get("subjectId").setValue(0);
-      const departament = Faculty.getAttributes(this.departaments, id);
-      this.subjects = departament?.subjects;
-      this.subjectSelected = {
-        ...this.subjectSelected,
-        departament: departament?.name || "",
-      };
+      this.position.setDepartament(id);
+      this.options.subjects = this.position.getSubjects();
+      this._positionDisplay = this.position.getInfoToDisplay();
     });
 
     this.fg.get("subjectId").valueChanges.subscribe((id) => {
-      this.subjectSelected = {
-        ...this.subjectSelected,
-        ...Faculty.getAttributes(this.subjects, id),
-      };
+      this.position.setSubject(id);
+      this._positionDisplay = this.position.getInfoToDisplay();
     });
-  }
-
-  getInfoSubjectSelected() {
-    const typeTeacher = Faculty.getAttributes(
-      this.typeTeachers,
-      this.candidate.typeCandidateId
-    );
-    const departament = Faculty.getAttributes(
-      typeTeacher?.departaments,
-      this.candidate.departamentId
-    );
-    const subject = Faculty.getAttributes(
-      departament?.subjects,
-      this.candidate.subjectId
-    );
-    this.subjectSelected = {
-      typeTeacher: typeTeacher?.name || "",
-      departament: departament?.name || "",
-      ...subject,
-    };
   }
 
   async onSubmit() {
     if (
-      !confirm(`¿Esta seguro de posturar a la categoria ${this.subjectSelected?.plazaCode}?. 
+      !confirm(`¿Esta seguro de posturar a la categoria ${this._positionDisplay?.plazaCode}?. 
     Esta acción solo se puede realizar una vez`)
     )
       return;
-    this.submitted = true;
-    const data = this.fg.value;
-    const {
-      data: { hasCategory },
-    } = await this.candidateService.selectPosition({
-      candidateId: this.candidate.id,
-      typeCandidateId: data.typeCandidateId,
-      departamentId: data.departamentId,
-      subjectId: data.subjectId,
-    });
-    this.hasCategory = hasCategory;
-    this.submitted = false;
+    this.flag.submitted = true;
+    const position = this.fg.value as SelectPositionInput;
+    this.flag.hasPosition = await this.candidateService.selectPosition(position);
+    this.flag.submitted = false;
   }
 }

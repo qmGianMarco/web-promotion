@@ -2,7 +2,7 @@ export const FC_FACULTY = {
   id: 2,
   name: "CIENCIAS",
   code: "FC",
-  typeTeachers: [
+  typeCandidates: [
     {
       id: 1,
       name: "DOCENTES PRINCIPALES",

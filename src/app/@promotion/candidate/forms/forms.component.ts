@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { StatusService } from "../../services/state.service";
 import { E_STATUS } from "../../../utils/status";
-import { ItemService } from "../../services/item.service";
+import { TableService } from "../../services/table.service";
 import { FICHA } from "../../../utils/ficha";
 @Component({
   selector: "forms",
@@ -14,7 +14,7 @@ export class FormsComponent {
 
   constructor(
     private statusService: StatusService,
-    private itemService: ItemService
+    private tableServices: TableService
   ) {}
 
   async ngOnInit() {
@@ -32,7 +32,7 @@ export class FormsComponent {
   }
 
   async fetchFormsInService() {
-    await this.itemService.getAllFormComplete();
+    await this.tableServices.setTables();
     this.canDisplayForms = true;
     this.loadingForms = false;
   }

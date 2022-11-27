@@ -2,7 +2,7 @@ export const FIC_FACULTY = {
   id: 4,
   name: "INGENIERÍA CIVIL",
   code: "FIC",
-  typeTeachers: [
+  typeCandidates: [
     {
       id: 1,
       name: "DOCENTES AUXILIARES",

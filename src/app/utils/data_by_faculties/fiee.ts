@@ -2,7 +2,7 @@ export const FIEE_FACULTY = {
   id: 5,
   name: "INGENIERÍA ELÉCTRICA Y ELECTRÓNICA",
   code: "FIEE",
-  typeTeachers: [
+  typeCandidates: [
     {
       id: 1,
       name: "DOCENTES AUXILIARES",

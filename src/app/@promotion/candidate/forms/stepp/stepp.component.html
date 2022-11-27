@@ -9,7 +9,7 @@
         </h6>
       </div>
       <div *ngFor="let documentItem of headItem.documentItems">
-        <item [body_item]="documentItem"></item>
+        <table style="width: 100%" [tableSetting]="documentItem"></table>
       </div>
     </div>
   </div>

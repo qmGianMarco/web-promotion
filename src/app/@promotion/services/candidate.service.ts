@@ -3,37 +3,39 @@ import { HttpClient } from "@angular/common/http";
 import { PromotionService } from "../promotion.service";
 import { TokenService } from "../../token.service";
 import { NbToastrService } from "@nebular/theme";
-import { LoadingService } from '../../interceptors/loading/loading.service';
+import { LoadingService } from "../../interceptors/loading/loading.service";
+import { Candidate } from "../class/candidate/candidate";
+import { FileService } from "../file/file.service";
 
 @Injectable({
   providedIn: "root",
 })
 export class CandidateService extends PromotionService {
-  teacherSelected: any = null;
-  candidateSelected: Candidate = null;
+  candidate: Candidate = null;
 
   constructor(
     http: HttpClient,
     tokenService: TokenService,
     toastService: NbToastrService,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private fileService: FileService
   ) {
     super(http, tokenService, toastService);
   }
 
   getSelected() {
-    return this.candidateSelected;
+    return this.candidate;
   }
 
+  updateFilesMetadata() {
+    if (this.fileService.getIsUploaded()) {
+      this.candidate.updateFileMetadata(this.fileService._getMetadata());
+    }
+  }
+
+  // TODO: remove function deprecated
   getStatusIdTeacherSelected() {
-    return this.teacherSelected?.statusId;
-  }
-
-  updateFileMetadata(input: FilesCandidate) {
-    const files = this.candidateSelected.files.filter(
-      (file) => file.id !== input.id
-    );
-    this.candidateSelected.files = [...files, input];
+    return 1;
   }
 
   findAll() {
@@ -45,7 +47,7 @@ export class CandidateService extends PromotionService {
   async findAndSelect(authId: string) {
     this.loadingService.show();
     const candidate = await this.get("/candidates/" + authId);
-    this.candidateSelected = candidate.data;
+    this.candidate = new Candidate(candidate.data);
     this.loadingService.hide();
   }
 
@@ -54,48 +56,18 @@ export class CandidateService extends PromotionService {
     return this.create({ path, titleToast: "Registrar Candidato" }, null);
   }
 
-  selectPosition(input: SelectPositionInput) {
-    const { candidateId, ...rest } = input;
-    const path = "/candidates/" + candidateId + "/select-position";
-    return this.create({ path, titleToast: "Seleccionar Plaza" }, rest);
-  }
-
-  findFiles() {
-    const candidateId = this.candidateSelected.id;
-    return this.get(`/candidates/${candidateId}/files`);
+  async selectPosition(input: SelectPositionInput) {
+    const path = "/candidates/" + this.candidate.getId() + "/select-position";
+    const {
+      data: { hasPosition },
+    } = await this.create({ path, titleToast: "Seleccionar Plaza" }, input);
+    if (hasPosition) this.candidate.setPosition(input);
+    return hasPosition;
   }
 }
 
-interface SelectPositionInput {
-  candidateId: string;
+export type SelectPositionInput = {
   typeCandidateId: number;
   departamentId: number;
   subjectId: number;
-}
-
-export type Candidate = {
-  id: string;
-  userId: string;
-  codeUni: string;
-  typeCandidateId: number | null;
-  departamentId: number | null;
-  subjectId: number | null;
-  score: number;
-  approved: boolean;
-  statusId: number | null;
-  email?: string;
-  names: string;
-  dni: string;
-  status?: string;
-  codeFaculty: string;
-  facultyId: number;
-  hasAllStatements: boolean;
-  hasDocumentEvaluate: boolean;
-  files: FilesCandidate[];
-};
-
-export type FilesCandidate = {
-  id: number;
-  typeFileId: number;
-  url: string;
 };

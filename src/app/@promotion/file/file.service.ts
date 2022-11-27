@@ -4,7 +4,6 @@ import { PromotionService } from "../promotion.service";
 import { TokenService } from "../../token.service";
 import { NbToastrService } from "@nebular/theme";
 import { FileMetaDataType } from "./file.type";
-import { FilesCandidate } from '../services/candidate.service';
 
 const FILE = "/files";
 
@@ -13,7 +12,9 @@ const FILE = "/files";
 })
 export class FileService extends PromotionService {
   private fileMetadata: FileMetaDataType;
-  private fileMetadataUploaded: FilesCandidate;
+  private flag = {
+    isUploaded: false,
+  }
 
   constructor(
     http: HttpClient,
@@ -25,28 +26,27 @@ export class FileService extends PromotionService {
 
   setMetadata(fileMetadata: FileMetaDataType) {
     this.fileMetadata = fileMetadata;
+    this.flag.isUploaded = false;
   }
 
   _getMetadata() {
     return this.fileMetadata;
   }
 
-  getMetadataUpdloaded() {
-    return this.fileMetadataUploaded;
+  getIsUploaded() {
+    return this.flag.isUploaded;
   }
 
   // TODO: remove function deprecated
   getMetadata(metadata: FileMetaDataType) {
-    const { typeId, entityId, evaluatorId = null } = metadata;
-    const path = `${FILE}/${typeId}/${entityId}/${evaluatorId}`;
-    return this.get(path);
+    return {} as any;
   }
 
   async upload(file: File) {
     const formData = new FormData();
     formData.append("filePdf", file);
-    const { typeId, entityId, url, fileId } = this.fileMetadata;
-    const path = `${FILE}/?typeId=${typeId}&entityId=${entityId}&url=${url}&id=${fileId}`;
+    const { typeId, entityId, url, id } = this.fileMetadata;
+    const path = `${FILE}/?typeId=${typeId}&entityId=${entityId}&url=${url}&id=${id}`;
     const response = await this.create(
       {
         path,
@@ -54,7 +54,13 @@ export class FileService extends PromotionService {
       },
       formData
     );
-    this.fileMetadataUploaded = response.data as FilesCandidate;
+    const data = response.data as { id: string; url: string };
+    this.fileMetadata = {
+      ...this.fileMetadata,
+      id: data.id,
+      url: data.url,
+    };
+    this.flag.isUploaded = true;
   }
 
   download() {

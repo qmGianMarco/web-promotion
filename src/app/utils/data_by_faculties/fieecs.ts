@@ -2,7 +2,7 @@ export const FIEECS_FACULTY = {
   id: 6,
   name: "INGENIERÍA ECONÓMICA, ESTADÍSTICA Y CIENCIAS SOCIALES",
   code: "FIEECS",
-  typeTeachers: [
+  typeCandidates: [
     {
       id: 1,
       name: "DOCENTES AUXILIARES",

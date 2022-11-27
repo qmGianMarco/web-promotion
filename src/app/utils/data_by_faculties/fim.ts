@@ -2,7 +2,7 @@ export const FIM_FACULTY = {
   id: 7,
   name: "INGENIERÍA MECÁNICA",
   code: "FIM",
-  typeTeachers: [
+  typeCandidates: [
     {
       id: 1,
       name: "DOCENTES AUXILIARES",

@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { TokenService } from "../../token.service";
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
-import { Faculty } from "../../../assets/data/faculties";
+import { Faculty } from "../../utils/faculties";
 @Component({
   templateUrl: "./home.component.html",
 })

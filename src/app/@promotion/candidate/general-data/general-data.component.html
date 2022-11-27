@@ -3,10 +3,10 @@
     <nb-card accent="primary">
       <nb-card-header>
         <nb-icon icon="person-add-outline"></nb-icon> Estado de Postulación -
-        {{ status }}
+        {{ statusName }}
       </nb-card-header>
       <nb-card-body>
-        <div *ngIf="!hasCategory">
+        <div *ngIf="!flag.hasPosition">
           <nb-card status="warning">
             <nb-card-header
               ><nb-icon icon="alert-triangle-outline"></nb-icon
@@ -33,10 +33,10 @@
                   formControlName="typeCandidateId"
                 >
                   <nb-option
-                    *ngFor="let typeTeacher of typeTeachers"
-                    [value]="typeTeacher.id"
+                    *ngFor="let typeCandidate of options.typeCandidates"
+                    [value]="typeCandidate.id"
                   >
-                    {{ typeTeacher?.name }}</nb-option
+                    {{ typeCandidate?.name }}</nb-option
                   >
                 </nb-select>
               </div>
@@ -52,7 +52,7 @@
                   formControlName="departamentId"
                 >
                   <nb-option
-                    *ngFor="let departament of departaments"
+                    *ngFor="let departament of options.departaments"
                     [value]="departament.id"
                   >
                     {{ departament?.name }}</nb-option
@@ -73,7 +73,7 @@
                   formControlName="subjectId"
                 >
                   <nb-option
-                    *ngFor="let subject of subjects"
+                    *ngFor="let subject of options.subjects"
                     [value]="subject.id"
                     >{{ subject?.plazaCode }}</nb-option
                   >
@@ -104,44 +104,44 @@
               <p>
                 <label><strong>Facultad: </strong></label>
                 <label class="col-sm-9">{{
-                  faculty.name + " - " + faculty.code || "----"
+                  _positionDisplay?.facultyName || "----"
                 }}</label>
               </p>
               <p>
                 <label><strong>Categoria: </strong></label>
                 <label class="col-sm-9">{{
-                  subjectSelected?.typeTeacher || "----"
+                  _positionDisplay?.typeCandidate || "----"
                 }}</label>
               </p>
               <p>
                 <label><strong>Departamento: </strong></label>
                 <label class="col-sm-9">{{
-                  subjectSelected?.departament || "----"
+                  _positionDisplay?.departament || "----"
                 }}</label>
               </p>
               <p>
                 <label><strong>Codigo de Plaza: </strong></label>
                 <label class="col-sm-9">{{
-                  subjectSelected?.plazaCode || "----"
+                  _positionDisplay?.plazaCode || "----"
                 }}</label>
               </p>
               <p>
                 <label><strong>Dedicación Horaria: </strong></label>
                 <label class="col-sm-9">{{
-                  subjectSelected?.scheduleDedication || "----"
+                  _positionDisplay?.scheduleDedication || "----"
                 }}</label>
               </p>
               <p>
                 <label><strong>Asignaturas: </strong></label> <br />
               </p>
-              <ul class="mb-1" *ngFor="let name of subjectSelected?.names">
+              <ul class="mb-1" *ngFor="let name of _positionDisplay?.names">
                 <li>{{ name }}</li>
               </ul>
               <label class="mt-2"
                 ><strong>Requisitos Específicos: </strong></label
               >
               <p id="requirements">
-                {{ subjectSelected?.requirements || "----" }}
+                {{ _positionDisplay?.requirements || "----" }}
               </p>
             </nb-card-body>
           </nb-card>
@@ -150,14 +150,14 @@
     </nb-card>
   </div>
 
-  <div class="col-md-4" *ngIf="hasCategory">
+  <div class="col-md-4" *ngIf="flag.hasPosition">
     <statements></statements>
     <ngx-document-evaluate
-      *ngIf="candidate.hasDocumentEvaluate"
+      *ngIf="flag.hasDocumentEvaluate"
     ></ngx-document-evaluate>
     <ngx-request-claim
       [teacherId]="teacherId"
-      *ngIf="canDisplayClaim"
+      *ngIf="flag.canDisplayClaim"
     ></ngx-request-claim>
   </div>
 </div>

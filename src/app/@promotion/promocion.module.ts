@@ -21,7 +21,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { SharedComponents } from "./shared";
 import { EvaluatorComponents } from "./evaluator";
 import { CandidateComponents } from "./candidate";
-import { SmartTableDataDatepickerComponent } from "./candidate/forms/stepp/item/smart-table-datepicker/smart-table-datepicker.component";
+import { SmartTableDataDatepickerComponent } from "./candidate/forms/stepp/table/smart-table-datepicker/smart-table-datepicker.component";
 
 const components = [
   ...CandidateComponents,

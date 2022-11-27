@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
-import { Faculty } from "../../../../assets/data/faculties";
+import { Faculty } from "../../../utils/faculties";
 import { TypeCandidate } from "../../../utils/type-candidate";
 import { AuthService } from "../auth.service";
 import { passwordEquality } from "../utils/validator-password-equality";

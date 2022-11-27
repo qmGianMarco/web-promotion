@@ -8,7 +8,35 @@ import { FIGMM_FACULTY } from "./data_by_faculties/figmm";
 import { FIIS_FACULTY } from "./data_by_faculties/fiis";
 import { FIM_FACULTY } from "./data_by_faculties/fim";
 
-export const FACULTIES = [
+export type SubjectType = {
+  id: number;
+  plazaCode: string;
+  category: string;
+  scheduleDedication: string;
+  names: string[];
+  requirements: string;
+};
+
+export type DepartamentType = {
+  id: number;
+  name: string;
+  subjects: SubjectType[];
+};
+
+export type TypeCandidateType = {
+  id: number;
+  name: string;
+  departaments: DepartamentType[];
+};
+
+export type FacultyType = {
+  id: number;
+  name: string;
+  code: string;
+  typeCandidates: TypeCandidateType[];
+};
+
+export const FACULTIES: FacultyType[] = [
   FC_FACULTY,
   FAUA_FACULTY,
   FIA_FACULTY,
@@ -32,9 +60,6 @@ export class Faculty {
   static findOneById(id) {
     return FACULTIES.find((faculty) => faculty.id === id);
   }
-
-  static getAttributes = (array: any[], id: number) =>
-    array?.find((item) => item.id === id);
 
   static findCodeById = (id: number) =>
     FACULTIES.find((item) => item.id === id)?.code;

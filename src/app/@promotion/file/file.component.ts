@@ -1,74 +1,63 @@
 import { Component, OnInit } from "@angular/core";
 import { NbWindowRef } from "@nebular/theme";
-import { PermissionService } from "../services/permission.service";
 import { FileService } from "./file.service";
 import { FileMetaDataType } from "./file.type";
 
+const SEP_NAME_REX = `__\\*\\*__`;
+
 @Component({
-  selector: "ngx-file",
   templateUrl: "./file.component.html",
   styleUrls: ["./file.component.scss"],
 })
 export class FileComponent implements OnInit {
   file: File = null;
-  context: any = null;
   canDownload = false;
   canUpload = false;
   showAlert = {};
   canDisplayUpload = false;
-  canDisplayComponents = false;
-  canViewComponents: boolean = false;
   fileMetadata: FileMetaDataType;
+  fileName = "";
 
-  constructor(
-    public windowRef: NbWindowRef,
-    public fileService: FileService,
-    private permissionService: PermissionService
-  ) {}
+  constructor(public windowRef: NbWindowRef, public fileService: FileService) {}
 
   ngOnInit() {
     this.fileMetadata = this.fileService._getMetadata();
-    this.canDownload = Boolean(this.fileMetadata.fileId);
+    this.fileName = this.fileMetadata.url.replace(
+      new RegExp(`.+${SEP_NAME_REX}`, "gi"),
+      ""
+    );
+    this.canDownload = Boolean(this.fileMetadata.url);
     this.canDisplayUpload = true;
-    this.canDisplayComponents = true;
   }
 
   onChange(event) {
-    this.file = event.target.files[0];
-    const isCorrectFile = this.valitateFile(this.file);
-    if (isCorrectFile.valid) {
-      this.canUpload = true;
-    } else {
-      this.canUpload = false;
+    this.canUpload = false;
+    const file = event.target.files[0];
+    const messageError = this.getMessageError(file);
+    if (messageError) {
       this.showAlert = {
-        message: isCorrectFile.message,
+        message: messageError,
         status: 500,
       };
+      return;
     }
+    this.canUpload = true;
+    this.file = file;
   }
 
-  valitateFile = (file) => {
-    if (file.type.indexOf("pdf") <= -1)
-      return {
-        valid: false,
-        message: "El archivo debe ser PDF",
-      };
-    if (file.size <= 5000000)
-      return {
-        valid: true,
-      };
-    return {
-      valid: false,
-      message: "El archivo debe ser menor a 5MB",
-    };
+  getMessageError = (file: File) => {
+    if (file?.type.indexOf("pdf") <= -1) {
+      return "El archivo debe ser PDF";
+    }
+    if (file?.size > 5000000) {
+      return "El archivo debe ser menor a 5MB";
+    }
   };
 
   async onUpload() {
     this.canUpload = false;
     await this.fileService.upload(this.file);
     this.close();
-    this.canUpload = false;
-    this.canDownload = true;
   }
 
   async onDownload() {
@@ -78,16 +67,6 @@ export class FileComponent implements OnInit {
     a.target = "_blank";
     a.download = file?.name;
     a.click();
-  }
-
-  async onView() {
-    const file = await this.fileService.download();
-    let pdfWindow = window.open("");
-    pdfWindow.document.write(
-      "<iframe width='100%' height='100%' src='data:application/pdf;base64, " +
-        encodeURI(file.data) +
-        "'></iframe>"
-    );
   }
 
   close() {

@@ -2,7 +2,7 @@ export const FIA_FACULTY = {
   id: 3,
   name: "INGENIERÍA AMBIENTAL",
   code: "FIA",
-  typeTeachers: [
+  typeCandidates: [
     {
       id: 1,
       name: "DOCENTES PRINCIPALES",

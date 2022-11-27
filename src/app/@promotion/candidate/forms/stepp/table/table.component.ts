@@ -1,48 +1,48 @@
-import {
-  Component,
-  Input,
-  OnChanges,
-  SimpleChanges,
-} from "@angular/core";
-import { ItemService } from "../../../../services/item.service";
+import { Component, Input, OnChanges, SimpleChanges } from "@angular/core";
+import { TableService } from "../../../../services/table.service";
 import { TokenPayload, TokenService } from "../../../../../token.service";
-import { IItemSetting } from "./item.interface";
+import { TableSettingType } from "./table.type";
 import { ButtonScoreComponent } from "./button-score/button-score";
 import { SmartTableDataDatepickerComponent } from "./smart-table-datepicker/smart-table-datepicker.component";
 import { E_DOCUMENTS_GENERAL } from "../../../../../utils/documents_generals";
 import { StageService } from "../../../../services/stage.service";
 import { PermissionService } from "../../../../services/permission.service";
-import { ButtonFileComponent } from "../../../../file/button-file.component";
+import { ButtonFileComponent } from "../../../../file/button-file/button-file.component";
+import { Table } from "../../../../class/table/table";
 @Component({
-  selector: "item",
-  templateUrl: "./item.component.html",
-  styleUrls: ["./item.component.scss"],
+  selector: "table",
+  templateUrl: "./table.component.html",
+  styleUrls: ["./table.component.scss"],
 })
-export class ItemComponent implements OnChanges {
-  @Input() body_item: IItemSetting;
+export class TableComponent implements OnChanges {
+  @Input() tableSetting: TableSettingType;
   readyConfigurations = false;
   data = [];
   settings: any;
   payloadToken: TokenPayload;
+  table: Table;
   columns = {
     custom: {},
     actions: {},
     default: {},
   };
   constructor(
-    public itemService: ItemService,
+    public tableService: TableService,
     private tokenService: TokenService,
     private stageService: StageService,
     private permissionService: PermissionService
-  ) {
-    this.payloadToken = this.tokenService.getPayload();
-  }
+  ) {}
 
   async ngOnChanges(changes: SimpleChanges) {
-    if (changes.body_item?.currentValue.columns) {
+    if (changes.tableSetting?.currentValue.columns) {
       await this.setColumns();
-      this.setDataTable(changes.body_item.currentValue.values);
+      this.setDataTable(changes.tableSetting.currentValue.values);
     }
+  }
+
+  async ngOnInit() {
+    this.payloadToken = this.tokenService.getPayload();
+    this.table = this.tableService.getTableById(this.tableSetting.id);
   }
 
   async setColumns() {
@@ -163,7 +163,7 @@ export class ItemComponent implements OnChanges {
   }
 
   setDataPickerColumns() {
-    const columns = this.body_item.columns as any;
+    const columns = this.tableSetting.columns as any;
     const customDatePicker = {
       editor: {
         type: "custom",
@@ -192,44 +192,39 @@ export class ItemComponent implements OnChanges {
   }
 
   async refresh() {
-    const { data } = await this.itemService.listItemForm(this.body_item.id);
+    const { data } = await this.tableService.listRecordsOfTable(
+      this.tableSetting.id
+    );
     this.setDataTable(data);
   }
 
   setDataTable(data: any[]) {
-    this.data = data.map((item) => {
-      return {
-        ...item.description,
-        id: item.id,
-        button: item.isUploaded,
-        typeId: E_DOCUMENTS_GENERAL.FORM,
-        settingScore: this.body_item.score,
-        fileId: item.fileId,
-        score: item.score,
-      };
-    });
+    this.data = this.table.getColumnsValues();
+    // this.data = data.map((item) => {
+    //   return {
+    //     ...item.description,
+    //     id: item.id,
+    //     button: item.isUploaded,
+    //     typeId: E_DOCUMENTS_GENERAL.FORM,
+    //     settingScore: this.tableSetting.score,
+    //     fileId: item.fileId,
+    //     score: item.score,
+    //   };
+    // });
   }
 
   async onCreateConfirm(event) {
-    let description = event.newData;
-    delete description.button;
-    await this.itemService.insertItemForm(
-      this.body_item.id,
-      JSON.stringify(description)
-    );
+    const {score, button, ...columnValue}  = event.newData;
+    await this.tableService.createRecord({
+      tableId: this.tableSetting.id,
+      columnValue: columnValue,
+    });
     this.refresh();
   }
 
   async onEditConfirm(event) {
-    const id = event.data.id;
-    let description = event.newData;
-    delete description.id;
-    delete description.score;
-    delete description.button;
-    delete description.settingScore;
-    delete description.typeId;
-    delete description.fileId;
-    await this.itemService.updateItemForm(id, JSON.stringify(description));
+    const { id, score, button, ...columnValue } = event.newData;
+    await this.tableService.updateRecord(id, columnValue);
     await this.refresh();
   }
 
@@ -240,7 +235,7 @@ export class ItemComponent implements OnChanges {
     }
     event.confirm.resolve();
     const id = event.data.id;
-    await this.itemService.deleteItemForm(id);
+    await this.tableService.deleteRecord(id);
     await this.refresh();
   }
 }

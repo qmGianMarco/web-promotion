@@ -2,7 +2,7 @@ export const FIGMM_FACULTY = {
   id: 8,
   name: "INGENIERÍA GEOLÓGICA, MINERA Y METALÚRGICA",
   code: "FIGMM",
-  typeTeachers: [
+  typeCandidates: [
     {
       id: 1,
       name: "DOCENTES PRINCIPALES",

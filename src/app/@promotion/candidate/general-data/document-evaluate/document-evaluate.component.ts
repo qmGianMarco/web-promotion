@@ -3,7 +3,7 @@ import { E_DOCUMENTS_GENERAL } from "../../../../utils/documents_generals";
 import { E_STATUS } from "../../../../utils/status";
 import { StatusService } from "../../../services/state.service";
 import { FileService } from "../../../file/file.service";
-import { FileMetaDataType } from "../../../file/file.type";
+import { fileMetadataDefault, FileMetaDataType } from "../../../file/file.type";
 
 @Component({
   selector: "ngx-document-evaluate",
@@ -14,18 +14,14 @@ export class DocumentEvaluateComponent implements OnChanges {
   @Input() teacherId: string;
   files: FileMetaDataType[] = [
     {
+      ...fileMetadataDefault,
       name: "Ficha de Evaluación",
       typeId: E_DOCUMENTS_GENERAL.REVIEW_SHEET,
-      fileId: null,
-      entityId: null,
-      url: null,
     },
     {
+      ...fileMetadataDefault,
       name: "Resumen de Evaluación",
       typeId: E_DOCUMENTS_GENERAL.SUMMARY_EVALUATE,
-      fileId: null,
-      entityId: null,
-      url: null,
     },
   ];
 
@@ -51,7 +47,7 @@ export class DocumentEvaluateComponent implements OnChanges {
     );
     this.files.forEach((file, i) => {
       const { id } = getMetaDataAll[i]?.data;
-      file.fileId = id;
+      file.id = id;
     });
   }
 

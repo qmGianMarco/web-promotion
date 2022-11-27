@@ -2,7 +2,7 @@ export const FAUA_FACULTY = {
   id: 1,
   name: "ARQUITECTURA, URBANISMO Y ARTES",
   code: "FAUA",
-  typeTeachers: [
+  typeCandidates: [
     {
       id: 1,
       name: "DOCENTES AUXILIARES",

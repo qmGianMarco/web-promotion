@@ -2,7 +2,7 @@ export const FIIS_FACULTY = {
   id: 9,
   name: "INGENIERÍA INDUSTRIAL Y DE SISTEMAS",
   code: "FIIS",
-  typeTeachers: [
+  typeCandidates: [
     {
       id: 1,
       name: "DOCENTES AUXILIARES",

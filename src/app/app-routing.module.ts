@@ -11,7 +11,7 @@ import { ConfirmAccountComponent } from "./pages/auth/confirm-account/confirm-ac
 export const routes: Routes = [
   {
     path: "",
-    // canActivate: [AuthGuard], // here we tell Angular to check the access with our AuthGuard
+    canActivate: [AuthGuard], // here we tell Angular to check the access with our AuthGuard
     loadChildren: () =>
       import("./pages/pages.module").then((m) => m.PagesModule),
   },
