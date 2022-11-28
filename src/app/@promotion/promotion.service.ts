@@ -91,7 +91,7 @@ export class PromotionService {
       {
         status: getStatusToastByHttpStatus(response.status),
         destroyByClick: true,
-        duration: 0,
+        duration: 4000,
         preventDuplicates: true,
       }
     );

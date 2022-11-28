@@ -36,13 +36,13 @@ export class TableComponent implements OnChanges {
   async ngOnChanges(changes: SimpleChanges) {
     if (changes.tableSetting?.currentValue.columns) {
       await this.setColumns();
-      this.setDataTable(changes.tableSetting.currentValue.values);
     }
   }
 
   async ngOnInit() {
     this.payloadToken = this.tokenService.getPayload();
     this.table = this.tableService.getTableById(this.tableSetting.id);
+    this.setDataTable();
   }
 
   async setColumns() {
@@ -77,7 +77,7 @@ export class TableComponent implements OnChanges {
         onComponentInitFunction: (instance) => {
           instance.closeView.subscribe((row) => {
             if (row === "CLOSED") {
-              this.refresh();
+              this.setDataTable();
             }
           });
         },
@@ -105,7 +105,7 @@ export class TableComponent implements OnChanges {
         onComponentInitFunction: (instance) => {
           instance.save.subscribe((row) => {
             if (row === "CLOSED") {
-              this.refresh();
+              this.setDataTable();
             }
           });
         },
@@ -191,41 +191,30 @@ export class TableComponent implements OnChanges {
     this.columns.default = columns;
   }
 
-  async refresh() {
-    const { data } = await this.tableService.listRecordsOfTable(
-      this.tableSetting.id
-    );
-    this.setDataTable(data);
-  }
-
-  setDataTable(data: any[]) {
+  setDataTable() {
     this.data = this.table.getColumnsValues();
-    // this.data = data.map((item) => {
-    //   return {
-    //     ...item.description,
-    //     id: item.id,
-    //     button: item.isUploaded,
-    //     typeId: E_DOCUMENTS_GENERAL.FORM,
-    //     settingScore: this.tableSetting.score,
-    //     fileId: item.fileId,
-    //     score: item.score,
-    //   };
-    // });
   }
 
   async onCreateConfirm(event) {
-    const {score, button, ...columnValue}  = event.newData;
-    await this.tableService.createRecord({
+    const { score, button, ...columnValue } = event.newData;
+    const { data } = await this.tableService.createRecord({
       tableId: this.tableSetting.id,
       columnValue: columnValue,
     });
-    this.refresh();
+    this.table.addColumnValue({
+      id: data.id,
+      columnValue,
+      score: null,
+      url: null,
+    });
+    this.setDataTable();
   }
 
   async onEditConfirm(event) {
     const { id, score, button, ...columnValue } = event.newData;
-    await this.tableService.updateRecord(id, columnValue);
-    await this.refresh();
+    const { data } = await this.tableService.updateRecord(id, columnValue);
+    this.table.updateColumnValue(data.id, data.columnValue);
+    this.setDataTable();
   }
 
   async onDeleteConfirm(event) {
@@ -235,7 +224,8 @@ export class TableComponent implements OnChanges {
     }
     event.confirm.resolve();
     const id = event.data.id;
-    await this.tableService.deleteRecord(id);
-    await this.refresh();
+    const { data } = await this.tableService.deleteRecord(id);
+    this.table.deleteColumnValue(data.id);
+    this.setDataTable();
   }
 }

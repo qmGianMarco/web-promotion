@@ -1,7 +1,6 @@
 import { Component, OnInit } from "@angular/core";
-import { FileService } from "../../../file/file.service";
 import { CandidateService } from "../../../services/candidate.service";
-import { fileMetadataDefault, FileMetaDataType } from "../../../file/file.type";
+import { FileMetaDataType } from "../../../file/file.type";
 import { Candidate } from "../../../class/candidate/candidate";
 
 @Component({
