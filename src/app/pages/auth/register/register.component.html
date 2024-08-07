@@ -1,0 +1,327 @@
+<h1 class="title">Promoción Docente UNI</h1>
+<img src="../../../../assets/images/logo-uni.png" alt="logo" class="center" />
+
+<h2 id="title" class="title">Preinscripción</h2>
+<nb-alert accent="info">
+  El periodo de preinscripción es del 28 de Noviembre al 06 de Diciembre.
+</nb-alert>
+<div>
+  <nb-alert accent="danger"
+    >Instrucciones: <br />
+    1. Completar el Formulario de Preinscripción. <br />
+    2. Confirmar su cuenta mediante el correo que le enviaremos una vez haya
+    completado el Formulario. <br />
+    3. Esperar la validación de sus datos. <br />
+    4. Si los datos son correctos se le notificará mediante un correo que ya
+    podrán hacer uso de la plataforma.
+    <br />
+    (Llenado del expediente virtual a partir del 12 de Diciembre)
+  </nb-alert>
+  <form (ngSubmit)="register()" [formGroup]="fg" aria-labelledby="title">
+    <div id="name" class="form-control-group">
+      <label class="label" for="name">Nombres</label>
+      <input
+        nbInput
+        placeholder="Nombre del postulante"
+        autofocus
+        fullWidth
+        fieldSize="large"
+        formControlName="name"
+        id="name"
+      />
+
+      <div
+        *ngIf="
+          fg.get('name').invalid &&
+          (fg.get('name').dirty || fg.get('name').touched)
+        "
+        class="text-danger"
+      >
+        <small class="caption status-danger"> El nombre es obligatorio </small>
+      </div>
+    </div>
+
+    <div id="lastname" class="form-control-group">
+      <label class="label" for="lastname">Apellido paterno</label>
+      <input
+        nbInput
+        placeholder="Apellido paterno"
+        autofocus
+        fullWidth
+        fieldSize="large"
+        formControlName="lastname"
+        id="lastname"
+      />
+      <div
+        *ngIf="
+          fg.get('lastname').invalid &&
+          (fg.get('lastname').dirty || fg.get('lastname').touched)
+        "
+        class="text-danger"
+      >
+        <small class="caption status-danger">
+          El apellido paterno es obligatorio
+        </small>
+      </div>
+    </div>
+
+    <div id="motherLastname" class="form-control-group">
+      <label class="label" for="motherLastname">Apellido materno</label>
+      <input
+        nbInput
+        placeholder="Apellido materno"
+        autofocus
+        fullWidth
+        fieldSize="large"
+        formControlName="motherLastname"
+        id="motherLastname"
+      />
+      <div
+        *ngIf="
+          fg.get('motherLastname').invalid &&
+          (fg.get('motherLastname').dirty || fg.get('motherLastname').touched)
+        "
+        class="text-danger"
+      >
+        <small class="caption status-danger">
+          El apellido materno es obligatorio
+        </small>
+      </div>
+    </div>
+
+    <div id="dni" class="form-control-group">
+      <label class="label" for="dni">DNI</label>
+      <input
+        nbInput
+        placeholder="12345678"
+        autofocus
+        fullWidth
+        fieldSize="large"
+        formControlName="dni"
+        id="dni"
+      />
+      <div
+        *ngIf="
+          fg.get('dni').errors?.required &&
+          (fg.get('dni').dirty || fg.get('dni').touched)
+        "
+        class="text-danger"
+      >
+        <small class="caption status-danger"> El DNI es obligatorio </small>
+      </div>
+
+      <div
+        *ngIf="
+          fg.get('dni').errors?.pattern &&
+          (fg.get('dni').dirty || fg.get('dni').touched)
+        "
+        class="text-danger"
+      >
+        <small class="caption status-danger"> El DNI no es válido </small>
+      </div>
+    </div>
+
+    <div id="phone" class="form-control-group">
+      <label class="label" for="phone">Telefono</label>
+      <input
+        nbInput
+        placeholder="987654321"
+        autofocus
+        fullWidth
+        fieldSize="large"
+        formControlName="phone"
+        id="phone"
+      />
+      <div
+        *ngIf="
+          fg.get('phone').errors?.required &&
+          (fg.get('phone').dirty || fg.get('phone').touched)
+        "
+        class="text-danger"
+      >
+        <small class="caption status-danger"> El phone es obligatorio </small>
+      </div>
+
+      <div
+        *ngIf="
+          fg.get('phone').errors?.pattern &&
+          (fg.get('phone').dirty || fg.get('phone').touched)
+        "
+        class="text-danger"
+      >
+        <small class="caption status-danger"> El telefono no es válido </small>
+      </div>
+    </div>
+
+    <div id="codeUni" class="form-control-group">
+      <label class="label" for="codeUni">Codigo UNI</label>
+      <input
+        nbInput
+        placeholder="Codigo UNI"
+        autofocus
+        fullWidth
+        fieldSize="large"
+        formControlName="codeUni"
+        id="codeUni"
+      />
+      <div
+        *ngIf="
+          fg.get('codeUni').errors?.required &&
+          (fg.get('codeUni').dirty || fg.get('codeUni').touched)
+        "
+        class="text-danger"
+      >
+        <small class="caption status-danger">
+          El Codigo UNI es obligatorio
+        </small>
+      </div>
+    </div>
+
+    <div id="facultyId" class="form-control-group">
+      <label class="label">Facultad</label>
+      <nb-select
+        placeholder="Seleccionar Facultad"
+        filled
+        fullWidth
+        formControlName="facultyId"
+      >
+        <nb-option *ngFor="let faculty of faculties" [value]="faculty.id"
+          >{{ faculty?.code }} - {{ faculty?.name }}</nb-option
+        >
+      </nb-select>
+    </div>
+
+    <div id="currentTypeCandidateId" class="form-control-group">
+      <label class="label">Categoria Actual</label>
+      <nb-select
+        placeholder="Seleccionar Tipo de Candidato"
+        filled
+        fullWidth
+        formControlName="currentTypeCandidateId"
+      >
+        <nb-option
+          *ngFor="let typeCandidate of typesCandidate"
+          [value]="typeCandidate.id"
+        >
+          {{ typeCandidate?.name }}</nb-option
+        >
+      </nb-select>
+    </div>
+
+    <div id="email" class="form-control-group">
+      <label class="label" for="email">Correo</label>
+      <input
+        nbInput
+        placeholder="example@gmail.com"
+        autofocus
+        fullWidth
+        fieldSize="large"
+        formControlName="email"
+        id="email"
+      />
+      <div
+        *ngIf="
+          fg.get('email').errors?.required &&
+          (fg.get('email').dirty || fg.get('email').touched)
+        "
+        class="text-danger"
+      >
+        <small class="caption status-danger"> El correo es obligatorio </small>
+      </div>
+
+      <div
+        *ngIf="
+          fg.get('email').errors?.email &&
+          (fg.get('email').dirty || fg.get('email').touched)
+        "
+        class="text-danger"
+      >
+        <small class="caption status-danger">
+          No es un correo electronico valido
+        </small>
+      </div>
+    </div>
+
+    <div id="password" class="form-control-group">
+      <label class="label" for="password">Contraseña</label>
+      <input
+        nbInput
+        placeholder="12345678"
+        autofocus
+        fullWidth
+        fieldSize="large"
+        formControlName="password"
+        type="password"
+        id="password"
+      />
+      <div
+        *ngIf="
+          fg.get('password').errors?.required &&
+          (fg.get('password').dirty || fg.get('password').touched)
+        "
+        class="text-danger"
+      >
+        <small class="caption status-danger">
+          La contraseña es obligatorio
+        </small>
+      </div>
+    </div>
+
+    <div id="repeatPassword" class="form-control-group">
+      <label class="label" for="repassword">Confirmar contraseña</label>
+      <input
+        nbInput
+        placeholder="12345678"
+        autofocus
+        fullWidth
+        fieldSize="large"
+        formControlName="repassword"
+        id="repassword"
+        type="password"
+      />
+      <div
+        *ngIf="
+          fg.get('repassword').errors?.required &&
+          (fg.get('repassword').dirty || fg.get('repassword').touched)
+        "
+        class="text-danger"
+      >
+        <small class="caption status-danger">
+          La confirmación de contraseña es obligatorio
+        </small>
+      </div>
+
+      <div
+        *ngIf="
+          fg.get('repassword').errors?.notEqualPassword &&
+          (fg.get('repassword').dirty || fg.get('repassword').touched)
+        "
+        class="text-danger"
+      >
+        <small class="caption status-danger">
+          Las contraseñas no coinciden
+        </small>
+      </div>
+    </div>
+
+    <button
+      nbButton
+      class="mt-4"
+      fullWidth
+      status="primary"
+      size="large"
+      [disabled]="submitted || this.fg.invalid"
+    >
+      Registrarse
+    </button>
+  </form>
+</div>
+<section class="another-action" aria-label="Sign in">
+  <a class="text-link" routerLink="../login">¿Desea Iniciar Sesión?</a>
+</section>
+
+<section class="another-action" aria-label="Sign in">
+  <a class="text-link" routerLink="../request-reset-password"
+    >¿Desea recuperar su cuenta?</a
+  >
+</section>

@@ -1,0 +1,22 @@
+<nb-card accent="primary">
+  <nb-card-header>
+    <nb-icon icon="book-open-outline"></nb-icon>
+    FASE 01: EVALUACIÓN DE MERITOS | DOCUMENTOS DE EVALUACIÓN</nb-card-header
+  >
+  <nb-card-body>
+    <form>
+      <div class="form-group row" *ngFor="let file of files">
+        <label class="label col-sm-3 col-form-label">{{
+          file?.name
+        }}</label>
+        <div class="col-sm-9" >
+          <button-file
+            [rowData]="file"
+            [value]="file.isUploaded"
+            (closeView)="closeView()"
+          ></button-file>
+        </div>
+      </div>
+    </form>
+  </nb-card-body>
+</nb-card>

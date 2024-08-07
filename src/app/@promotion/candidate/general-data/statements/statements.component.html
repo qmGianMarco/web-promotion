@@ -1,0 +1,31 @@
+<nb-card accent="primary">
+  <nb-card-header>
+    <nb-icon icon="book-open-outline"></nb-icon>
+    Declaraciones Juradas</nb-card-header
+  >
+  <nb-card-body>
+    <nb-card status="warning" *ngIf="!hasUploadedStatements">
+      <nb-card-header
+        ><nb-icon icon="alert-triangle-outline"></nb-icon
+        >Precaución</nb-card-header
+      >
+      <nb-card-body>
+        Debe tener presente que <strong>solo se puede seleccionar una vez.</strong>.
+      </nb-card-body>
+    </nb-card>
+    <form>
+      <div class="form-group row" *ngFor="let statement of statements">
+        <label class="label col-sm-3 col-form-label">{{
+          statement?.name
+        }}</label>
+        <div class="col-sm-9" >
+          <button-file
+            [rowData]="statement"
+            [value]="statement.fileId !== null"
+            (closeView)="closeView()"
+          ></button-file>
+        </div>
+      </div>
+    </form>
+  </nb-card-body>
+</nb-card>

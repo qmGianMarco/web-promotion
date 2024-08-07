@@ -1,0 +1,8 @@
+<div [ngSwitch]="status" *ngIf="display">
+  <nb-alert *ngSwitchCase="201" status="success">{{ message }}</nb-alert>
+  <nb-alert *ngSwitchCase="202" status="info">{{ message }}</nb-alert>
+  <nb-alert *ngSwitchCase="200" status="success">{{ message }}</nb-alert>
+  <nb-alert *ngSwitchCase="500" status="danger">{{ message }}</nb-alert>
+  <nb-alert *ngSwitchCase="404" status="warning">{{ message }}</nb-alert>
+  <nb-alert *ngSwitchCase="409" status="warning">{{ message }}</nb-alert>
+</div>

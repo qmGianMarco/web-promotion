@@ -1,0 +1,29 @@
+<nb-card accent="warning" *ngIf="!teacher?.id">
+  <nb-card-header>
+    <nb-icon icon="alert-triangle-outline"></nb-icon> Sin Docente Seleccionado
+  </nb-card-header>
+  <nb-card-body>
+    Para visualizar las datos del postulante debe <b>SELECCIONAR</b> en la sección anterior.
+  </nb-card-body>
+</nb-card>
+<nb-card accent="primary" *ngIf="teacher?.id">
+  <nb-card-header>
+    <nb-icon icon="person-done-outline"></nb-icon>
+    <strong> Docente Seleccionado </strong>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="row">
+      <p>
+        <b>Docente</b>: {{ teacher.name }} {{ teacher.surname }}
+        {{ teacher.motherSurname }}
+      </p>
+    </div>
+    <div class="row">
+      <p><b>DNI</b>: {{ teacher.dni }}</p>
+    </div>
+    <div class="row">
+      <p><b>Estado</b>: {{ teacher.status }}</p>
+    </div>
+    <ngx-form-user [teacherId]="teacher?.id"></ngx-form-user>
+  </nb-card-body>
+</nb-card>

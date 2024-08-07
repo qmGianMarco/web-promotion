@@ -1,0 +1,47 @@
+<nb-card accent="info">
+  <nb-card-body>
+    <span class="text-success"> Archivo Guardado: <strong>{{ fileName }}</strong></span>
+    <div id="input-upload" class="row" *ngIf="canDisplayUpload">
+      <div class="col-sm-12">
+        <ngx-alert-prom [settings]="showAlert"></ngx-alert-prom>
+        <label for="inputDocument" class="label">Seleccionar Archivo</label>
+        <input
+          type="file"
+          nbInput
+          fullWidth
+          id="inputDocument"
+          (change)="onChange($event)"
+        />
+        <span class="text-primary">
+          (El documento debe estar en formato PDF y un peso máximo de
+          5MB.)</span
+        >
+      </div>
+    </div>
+    <br />
+    <div class="buttons-row" style="text-align: center">
+      <button
+        *ngIf="canDisplayUpload"
+        outline
+        nbButton
+        [disabled]="!canUpload"
+        status="primary"
+        (click)="onUpload()"
+      >
+        <nb-icon icon="cloud-upload-outline"></nb-icon>
+        Guardar
+      </button>
+
+      <button
+        outline
+        nbButton
+        [disabled]="!canDownload"
+        status="success"
+        (click)="onDownload()"
+      >
+        <nb-icon icon="cloud-download-outline"></nb-icon>
+        Descargar
+      </button>
+    </div>
+  </nb-card-body>
+</nb-card>

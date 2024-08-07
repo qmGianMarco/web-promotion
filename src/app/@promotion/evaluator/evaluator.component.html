@@ -1,0 +1,26 @@
+<nb-accordion>
+  <nb-accordion-item #item>
+    <nb-accordion-item-header> Acta de Autorización </nb-accordion-item-header>
+    <nb-accordion-item-body>
+      <opening-act> </opening-act>
+    </nb-accordion-item-body>
+  </nb-accordion-item>
+
+  <nb-accordion-item #teachers expanded="true">
+    <nb-accordion-item-header>
+      Selección de Postulantes
+    </nb-accordion-item-header>
+    <nb-accordion-item-body>
+      <list-candidates (setTeacher)="onSetTeacher($event)"></list-candidates>
+    </nb-accordion-item-body>
+  </nb-accordion-item>
+
+  <nb-accordion-item #ficha>
+    <nb-accordion-item-header>
+      Postulante Seleccionado
+    </nb-accordion-item-header>
+    <nb-accordion-item-body>
+      <evaluate-candidate [teacher]="teacher"></evaluate-candidate>
+    </nb-accordion-item-body>
+  </nb-accordion-item>
+</nb-accordion>
